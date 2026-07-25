@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Column, Date, DateTime, String, Numeric, Integer, func
+from sqlalchemy import Column, Date, DateTime, String, Numeric, Integer, ForeignKey, func
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 
 from app.database.base import Base
@@ -10,7 +10,7 @@ class Campaign(Base):
     __tablename__ = "campaigns"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    school_id = Column(UUID(as_uuid=True), nullable=False)
+    school_id = Column(UUID(as_uuid=True), ForeignKey("schools.id"), nullable=False)
     name = Column(String, nullable=False)
     channel = Column(String, nullable=True)
     start_date = Column(Date, nullable=True)

@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Column, DateTime, String, func, Float
+from sqlalchemy import Column, DateTime, String, func, Float, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 
 from app.database.base import Base
@@ -10,7 +10,7 @@ class Competitor(Base):
     __tablename__ = "competitors"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    school_id = Column(UUID(as_uuid=True), nullable=True)
+    school_id = Column(UUID(as_uuid=True), ForeignKey("schools.id", ondelete="CASCADE"), nullable=True)
     name = Column(String, nullable=False)
     domain = Column(String, nullable=True)
     meta = Column(JSONB, nullable=True)

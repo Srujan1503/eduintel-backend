@@ -94,3 +94,75 @@ def test_viewer_cannot_create_campaign(client, monkeypatch):
         json={"name": "Test campaign", "channel": "email"},
     )
     assert response.status_code == 403
+
+
+def test_campaign_patch_updates_single_field(client, monkeypatch):
+    profile = _override_auth(monkeypatch, school_id=uuid.uuid4(), role_name="school_admin")
+
+    class DummyCampaignService:
+        def __init__(self, db):
+            self.db = db
+
+        def get(self, _id):
+            return SimpleNamespace(id=_id, school_id=profile.school_id, name="Original", channel="email")
+
+        def update(self, db_obj, data):
+            update_data = data.model_dump(exclude_unset=True)
+            for field, value in update_data.items():
+                setattr(db_obj, field, value)
+            return db_obj
+
+    monkeypatch.setattr("app.api.v1.campaigns.CampaignService", DummyCampaignService)
+
+    response = client.patch(
+        f"/api/v1/campaigns/{uuid.uuid4()}",
+        headers={"Authorization": "Bearer test-token"},
+        json={"name": "Updated name"},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["name"] == "Updated name"
+    assert response.json()["channel"] == "email"
+
+
+def test_school_patch_updates_single_field(client, monkeypatch):
+    profile = _override_auth(monkeypatch, school_id=uuid.uuid4(), role_name="school_admin")
+
+    class DummySchoolService:
+        def __init__(self, db):
+            self.db = db
+
+        def get(self, _id):
+            return SimpleNamespace(
+                id=_id,
+                school_id=profile.school_id,
+                name="Original School",
+                type="school",
+                subscription_tier="starter",
+                address=None,
+                city="Old City",
+                state=None,
+                country="India",
+                website=None,
+                phone=None,
+                logo_url=None,
+                is_active=True,
+            )
+
+        def update(self, db_obj, data):
+            update_data = data.model_dump(exclude_unset=True)
+            for field, value in update_data.items():
+                setattr(db_obj, field, value)
+            return db_obj
+
+    monkeypatch.setattr("app.api.v1.schools.SchoolService", DummySchoolService)
+
+    response = client.patch(
+        f"/api/v1/schools/{uuid.uuid4()}",
+        headers={"Authorization": "Bearer test-token"},
+        json={"city": "New City"},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["city"] == "New City"
+    assert response.json()["name"] == "Original School"

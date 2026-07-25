@@ -11,7 +11,7 @@ class Profile(Base):
     # it is always supplied (by the handle_new_user() DB trigger, or explicitly).
     id = Column(UUID(as_uuid=True), primary_key=True)
     school_id = Column(UUID(as_uuid=True), ForeignKey("schools.id", ondelete="SET NULL"), nullable=True)
-    role_id = Column(UUID(as_uuid=True), ForeignKey("roles.id"), nullable=False)
+    role_id = Column(UUID(as_uuid=True), ForeignKey("roles.id", ondelete="CASCADE"), nullable=False)
 
     full_name = Column(String, nullable=False)
     avatar_url = Column(String, nullable=True)

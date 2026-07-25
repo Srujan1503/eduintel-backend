@@ -21,11 +21,11 @@ class SchoolService:
         return self.repo.search(q=q, page=page, page_size=page_size)
 
     def create(self, data: SchoolCreate):
-        payload = data.dict()
+        payload = data.model_dump()
         return self.repo.create(payload)
 
     def update(self, db_obj, data: SchoolUpdate):
-        return self.repo.update(db_obj, data.dict())
+        return self.repo.update(db_obj, data.model_dump(exclude_unset=True))
 
     def delete(self, db_obj):
         return self.repo.soft_delete(db_obj)

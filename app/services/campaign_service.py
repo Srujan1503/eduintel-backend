@@ -1,6 +1,7 @@
-from uuid import UUID
-from sqlalchemy.orm import Session
 from typing import Optional
+from uuid import UUID
+
+from sqlalchemy.orm import Session
 
 from app.repositories.campaign import CampaignRepository
 from app.schemas.campaign import CampaignCreate, CampaignUpdate
@@ -17,13 +18,13 @@ class CampaignService:
         return self.repo.list(page=page, page_size=page_size, filters=filters)
 
     def create(self, data: CampaignCreate, school_id: Optional[UUID] = None):
-        payload = data.dict()
+        payload = data.model_dump()
         if school_id:
             payload["school_id"] = school_id
         return self.repo.create(payload)
 
     def update(self, db_obj, data: CampaignUpdate):
-        return self.repo.update(db_obj, data.dict())
+        return self.repo.update(db_obj, data.model_dump(exclude_unset=True))
 
     def delete(self, db_obj):
         return self.repo.soft_delete(db_obj)

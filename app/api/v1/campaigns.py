@@ -58,6 +58,21 @@ def update_campaign(
     return service.update(obj, payload)
 
 
+@router.patch("/{campaign_id}", response_model=CampaignResponse)
+def patch_campaign(
+    campaign_id: UUID,
+    payload: CampaignUpdate,
+    db: Session = Depends(get_db),
+    user: CurrentUser = Depends(require_role("school_admin", "marketing_manager")),
+):
+    service = CampaignService(db)
+    obj = service.get(campaign_id)
+    if obj is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Campaign not found")
+    ensure_tenant_access(obj, user)
+    return service.update(obj, payload)
+
+
 @router.get("/{campaign_id}/roi")
 def campaign_roi(campaign_id: UUID, db: Session = Depends(get_db), user: CurrentUser = Depends(require_school)):
     service = CampaignService(db)

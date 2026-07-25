@@ -61,6 +61,23 @@ def update_school(
     return updated
 
 
+@router.patch("/{school_id}", response_model=SchoolResponse)
+def patch_school(
+    school_id: UUID,
+    payload: SchoolUpdate,
+    db: Session = Depends(get_db),
+    user: CurrentUser = Depends(require_role("super_admin", "school_admin")),
+):
+    service = SchoolService(db)
+    obj = service.get(school_id)
+    if obj is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="School not found")
+    if user.role_name != "super_admin":
+        ensure_tenant_access(obj, user)
+    updated = service.update(obj, payload)
+    return updated
+
+
 @router.delete("/{school_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_school(school_id: UUID, db: Session = Depends(get_db), _ = Depends(require_role("super_admin"))):
     service = SchoolService(db)
