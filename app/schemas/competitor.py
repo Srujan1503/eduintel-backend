@@ -1,29 +1,28 @@
 from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class CompetitorCreate(BaseModel):
     name: str = Field(..., min_length=1)
-    domain: Optional[str]
-    meta: Optional[dict]
+    domain: Optional[str] = None
+    meta: Optional[dict] = None
 
 
 class CompetitorUpdate(BaseModel):
-    name: Optional[str]
-    domain: Optional[str]
-    meta: Optional[dict]
-    threat_score: Optional[float]
+    name: Optional[str] = None
+    domain: Optional[str] = None
+    meta: Optional[dict] = None
+    threat_score: Optional[float] = None
 
 
 class CompetitorResponse(BaseModel):
-    id: UUID
-    school_id: Optional[UUID]
-    name: str
-    domain: Optional[str]
-    meta: Optional[dict]
-    threat_score: Optional[float]
+    model_config = ConfigDict(from_attributes=True)
 
-    class Config:
-        orm_mode = True
+    id: UUID
+    school_id: Optional[UUID] = None
+    name: str
+    domain: Optional[str] = None
+    meta: Optional[dict] = None
+    threat_score: Optional[float] = None

@@ -8,7 +8,7 @@ from app.database.session import get_db
 from app.schemas.school import SchoolCreate, SchoolUpdate, SchoolResponse
 from app.schemas.common import PaginationParams, PaginatedResponse
 from app.services.school_service import SchoolService
-from app.auth.dependencies import require_role, require_school
+from app.auth.dependencies import CurrentUser, ensure_tenant_access, require_role, require_school
 
 router = APIRouter(prefix="/schools", tags=["schools"])
 
@@ -29,6 +29,7 @@ def list_schools(
     pagination: PaginationParams = Depends(),
     q: Optional[str] = None,
     db: Session = Depends(get_db),
+    _ = Depends(require_school),
 ):
     service = SchoolService(db)
     items, total = service.search(q=q, page=pagination.page, page_size=pagination.page_size)
@@ -36,11 +37,12 @@ def list_schools(
 
 
 @router.get("/{school_id}", response_model=SchoolResponse)
-def get_school(school_id: UUID, db: Session = Depends(get_db)):
+def get_school(school_id: UUID, db: Session = Depends(get_db), user: CurrentUser = Depends(require_school)):
     service = SchoolService(db)
     obj = service.get(school_id)
     if obj is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="School not found")
+    ensure_tenant_access(obj, user)
     return obj
 
 

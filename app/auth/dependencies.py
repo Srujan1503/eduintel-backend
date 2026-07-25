@@ -1,3 +1,4 @@
+from typing import Any
 from uuid import UUID
 
 from fastapi import Depends, HTTPException, status
@@ -67,7 +68,23 @@ def require_school(user: CurrentUser = Depends(get_current_user)) -> CurrentUser
     """Ensures the caller is linked to a school before touching tenant-scoped data."""
     if user.role_name != "super_admin" and user.school_id is None:
         raise HTTPException(
-            status.HTTP_400_BAD_REQUEST,
+            status.HTTP_403_FORBIDDEN,
             detail="This account is not linked to a school yet",
         )
     return user
+
+
+def ensure_tenant_access(resource: Any, user: CurrentUser) -> None:
+    """Reject access to a tenant-scoped record that does not belong to the caller."""
+    if user.role_name == "super_admin":
+        return
+
+    resource_school_id = getattr(resource, "school_id", None)
+    if resource_school_id is None and hasattr(resource, "id"):
+        resource_school_id = resource.id
+
+    if resource_school_id is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Resource not found")
+
+    if str(resource_school_id) != str(user.school_id):
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Resource not found")
