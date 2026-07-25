@@ -1,0 +1,24 @@
+Report for Demo School
+Generated: 2026-07-25T21:59:33.028321
+
+Summary Statistics
+Total Campaigns,3
+Total Competitors,5
+Total Budget,$45000.00
+Total Spend,$30000.00
+Total Conversions,600
+Average Threat Score,0.54
+
+Campaigns
+ID,Name,Channel,Start Date,End Date,Budget,Spend,Conversions
+e158b0f6-30fc-465c-8437-64edfde5a410,Q1 Marketing Campaign,email,2026-01-01,2026-03-30,$10000.00,$7000.00,150
+cd3aaec7-e5ee-44fb-88b6-5ba3905696b1,Q2 Marketing Campaign,social,2026-04-01,2026-06-30,$15000.00,$10000.00,200
+8359d116-5597-4602-9961-f314d9954aeb,Q3 Marketing Campaign,search,2026-07-01,2026-09-30,$20000.00,$13000.00,250
+
+Competitors
+ID,Name,Domain,Threat Score,First Seen,Last Seen
+a711a404-297c-448e-bc28-e4adc416b807,Competitor 1,competitor1.com,0.3,2026-01-01 00:00:00,2026-07-25 00:00:00
+d004f640-b524-4d2a-9cdf-4d2368e0175e,Competitor 2,competitor2.com,0.42,2026-01-01 00:00:00,2026-07-25 00:00:00
+dafe28d0-29c2-44e4-a7fc-9f7d59995c20,Competitor 3,competitor3.com,0.54,2026-01-01 00:00:00,2026-07-25 00:00:00
+2d3a1544-39ff-4366-903d-c7ecd4d9a7b8,Competitor 4,competitor4.com,0.6599999999999999,2026-01-01 00:00:00,2026-07-25 00:00:00
+ad6821ca-a4bb-460d-afed-d5b737d3aa3c,Competitor 5,competitor5.com,0.78,2026-01-01 00:00:00,2026-07-25 00:00:00
